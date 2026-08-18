@@ -21,6 +21,7 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
   TaskPriority _priority = TaskPriority.medium;
   DateTime? _dueDate;
   bool _saving = false;
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
   bool get _isEditing => widget.existingTask != null;
 
@@ -55,7 +56,10 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
   }
 
   Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      setState(() => _autovalidateMode = AutovalidateMode.onUserInteraction);
+      return;
+    }
 
     setState(() => _saving = true);
     final provider = context.read<TaskProvider>();
@@ -97,6 +101,7 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
       body: SafeArea(
         child: Form(
           key: _formKey,
+          autovalidateMode: _autovalidateMode,
           child: ListView(
             padding: const EdgeInsets.all(20),
             children: [
